@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignLens</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <!-- Mediapipe -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+
+    <!-- Custom -->
+    <link rel="shortcut icon" href="../static/images/favicon.ico">
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="../static/detection.js" defer></script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md fs-5 p-3">
+        <div class="container-fluid text-center">
+            <img src="../static/images/logo.png" height="54" width="54">
+            <div class="title fw-bolder fs-1 font-white">SignLens 手語辨識資料集收錄平台</div>
+            <ul class="nav justify-content-end">
+                <!-- 使用說明 -->
+                <li class="nav-item">
+                    <a class="nav-link font-white" href="#" data-bs-toggle="modal"
+                        data-bs-target="#instruction">使用說明</a>
+                    <div class="modal fade" id="instruction" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">使用說明</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    <p>歡迎來到手語辨識資料集收錄平台！使用者可透過此平台自行錄製及上傳手語資料集。</p>
+                                    使用步驟如下：
+                                    <ul>
+                                        <li>透過「詞彙列表」查看資料庫已收錄詞彙，查找是否有同義詞可替換使用，也可以錄製同義詞增加詞彙的多元性。</li>
+                                        <li>分別在「您欲錄製的詞彙」輸入框內輸入欲錄製的中文詞彙或數字（一次限錄製一個詞彙），以及在「詞彙錄製的次數」輸入框內選擇欲錄製的次數，按下「Go」系統即會自動重整錄製畫面。
+                                        </li>
+                                        <li>待錄製畫面顯示後即自動開始錄製，並於畫面錄完之後，選擇要「捨棄」或「儲存」錄製資料。過程中若有錄錯或欲重錄的情況，仍需等錄製次數跑完，並選擇「捨棄」錄製資料後，才能重新再次點選錄製。
+                                        </li>
+                                        <li>「捨棄」的資料將不會被存取，「儲存」的資料將會保存於資料庫。</li>
+                                    </ul>
+                                    <p>以上四步驟即完成線上手語錄製～並可重複此四個步驟不斷錄製新的詞彙喔！</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <!-- 詞彙列表 -->
+                <li class="nav-item">
+                    <a class="nav-link font-white" href="#" data-bs-toggle="modal" data-bs-target="#wordList">詞彙列表</a>
+                    <div class="modal fade" id="wordList" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">詞彙列表</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table table-bordered border-dark">
+                                        <tr>
+                                            <td><b>注音開頭</b></td>
+                                            <td><b>資料庫已收錄詞彙</b></td>
+                                        </tr>
+                                        {% for tr in table %}
+                                        <tr>
+                                            <td>{{ tr['bopomofo'] }}</td>
+                                            <td>{{ tr['labels'] }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <!-- 關於我們 -->
+                <li class="nav-item">
+                    <a class="nav-link font-white" href="#" data-bs-toggle="modal" data-bs-target="#about">關於我們</a>
+                    <div class="modal fade" id="about" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">關於我們</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img class="mb-3" src="../static/images/About.JPG" height="250" width="400">
+                                    <p>大家好，我們是來自國立政治大學資訊管理學系的學生團隊，設計此系統的目的是希望開發一簡單易操作的網頁平台，收錄線上使用者於平台錄製之手語，藉此擴增台灣手語資料庫的完整性，並用於提供模型訓練，為台灣手語辨識的應用範圍擴展到各種使用情境。
+                                    </p>
+                                    有任何問題歡迎與我們聯絡：<a href="mailto:nccuhailabo@gmail.com">nccuhailabo@gmail.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- 錄製框 -->
+    <div class="card mt-4 m-auto">
+        <div class="card-body">
+            <!-- Setting -->
+            <div class="row justify-content-center" id="settingField">
+                <label for="inputText" class="col-form-label col-2 fw-bold text-end">詞彙：</label>
+                <input type="text" class="form-control col" id="inputText" placeholder="例如：銀行">
+                <label for="selectTime" class="col-form-label col-2 fw-bold text-end">錄製次數：</label>
+                <select class="form-select col" id="selectTime">
+                    <option disabled selected>請選擇錄製的次數</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                </select>
+                <button class="btn btn-success col-1 mx-5" id="recordBtn" disabled>載入中...</button>
+            </div>
+            <!-- Upload -->
+            <div class="row justify-content-center d-none" id="uploadField">
+                <div class="col-form-label col-4 fw-bold text-end">錄製完畢，要上傳這次錄製的資料嗎？</div>
+                <button class="btn btn-secondary col-1 me-3" id="dropBtn">捨棄</button>
+                <button class="btn btn-success col-1" id="uploadBtn">上傳</button>
+            </div>
+            <!-- Display -->
+            <div class="text-center">
+                <video class="d-none" id="video"></video>
+                <canvas class="mt-3" id="canvas" width="960" height="540"></canvas>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

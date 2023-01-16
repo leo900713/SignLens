@@ -1,0 +1,19 @@
+.card {
+    width: 80%;
+}
+
+.navbar {
+    background-color: #555B6E !important;
+}
+
+.font-white {
+    color: #ffffff;
+}
+
+.nav-link:focus {
+    color: #ffffff;
+}
+
+.nav-link:hover {
+    color: #9cc1f0;
+}

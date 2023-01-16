@@ -1,0 +1,4 @@
+Flask
+numpy
+psycopg2
+pypinyin
